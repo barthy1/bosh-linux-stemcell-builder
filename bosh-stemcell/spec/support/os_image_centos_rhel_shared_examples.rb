@@ -22,13 +22,13 @@ shared_examples_for 'a CentOS or RHEL based OS image' do
     end
 
     describe file('/etc/localtime') do
-      it { should contain 'UTC' }
+      its(:content) { should match '^UTC$' }
     end
 
     describe file('/usr/lib/systemd/system/runit.service') do
       it { should be_file }
-      it { should contain 'Restart=always' }
-      it { should contain 'KillMode=process' }
+      its(:content) { should match '^Restart=always$' }
+      its(:content) { should match '^KillMode=process$' }
     end
   end
 
@@ -58,7 +58,7 @@ shared_examples_for 'a CentOS or RHEL based OS image' do
         aes192-ctr
         aes128-ctr
       ).join(',')
-      expect(sshd_config).to contain(/^Ciphers #{ciphers}$/)
+      expect(sshd_config.content).to match("^Ciphers #{ciphers}$")
     end
 
     it 'allows only secure HMACs and the weaker SHA1 HMAC required by golang ssh lib' do
@@ -68,7 +68,7 @@ shared_examples_for 'a CentOS or RHEL based OS image' do
         hmac-ripemd160
         hmac-sha1
       ).join(',')
-      expect(sshd_config).to contain(/^MACs #{macs}$/)
+      expect(sshd_config.content).to match("^MACs #{macs}$")
     end
   end
 
@@ -86,8 +86,8 @@ shared_examples_for 'a CentOS or RHEL based OS image' do
   context 'readahead-collector should be disabled' do
     describe file('/etc/sysconfig/readahead') do
       it { should be_file }
-      it { should contain 'READAHEAD_COLLECT="no"' }
-      it { should contain 'READAHEAD_COLLECT_ON_RPM="no"' }
+      its(:content) { should match '^READAHEAD_COLLECT="no"$' }
+      its(:content) { should match '^READAHEAD_COLLECT_ON_RPM="no"$' }
     end
   end
 

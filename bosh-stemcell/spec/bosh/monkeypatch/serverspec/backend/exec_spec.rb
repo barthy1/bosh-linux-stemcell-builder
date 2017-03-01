@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module SpecInfra::Backend
+module Specinfra::Backend
   describe Exec do
     subject(:exec) { described_class.instance }
 

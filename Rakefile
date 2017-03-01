@@ -19,22 +19,22 @@ namespace :stemcell do
         ENV['CANDIDATE_BUILD_NUMBER'],
         args.os_image_path,
       )
-      collection = Bosh::Stemcell::StageCollection.new(definition)
-      runner = Bosh::Stemcell::StageRunner.new(
-        build_path: environment.build_path,
-        command_env: environment.command_env,
-        settings_file: environment.settings_path,
-        work_path: environment.work_path,
-      )
-      archive_handler = Bosh::Stemcell::ArchiveHandler.new
-
-      builder = Bosh::Stemcell::OsImageBuilder.new(
-        environment: environment,
-        collection: collection,
-        runner: runner,
-        archive_handler: archive_handler,
-      )
-      builder.build(args.os_image_path)
+      # collection = Bosh::Stemcell::StageCollection.new(definition)
+      # runner = Bosh::Stemcell::StageRunner.new(
+      #   build_path: environment.build_path,
+      #   command_env: environment.command_env,
+      #   settings_file: environment.settings_path,
+      #   work_path: environment.work_path,
+      # )
+      # archive_handler = Bosh::Stemcell::ArchiveHandler.new
+      #
+      # builder = Bosh::Stemcell::OsImageBuilder.new(
+      #   environment: environment,
+      #   collection: collection,
+      #   runner: runner,
+      #   archive_handler: archive_handler,
+      # )
+      # builder.build(args.os_image_path)
 
       sh(environment.os_image_rspec_command)
     rescue RuntimeError => e

@@ -115,7 +115,7 @@ describe 'Stemcell with Go Agent', stemcell_image: true do
       describe file(allow_file) do
         it { should contain('vcap') }
         # Ensure the file contains only 'vcap'
-        it { should match_md5checksum('d41d3484da5feaed42728835351b8b14') }
+        its(:md5sum) { should eq 'd41d3484da5feaed42728835351b8b14' }
       end
     end
 

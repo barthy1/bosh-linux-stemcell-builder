@@ -1,14 +1,14 @@
 # rubocop:disable all
 # => disabling rubocop to preserve original style
 require 'serverspec'
-require 'serverspec/helper/backend'
+# require 'serverspec/helper/backend'
 require 'pathname'
 
-unless Serverspec::VERSION == '0.15.4'
+unless Serverspec::VERSION == '2.36.0'
   raise "Unexpected Serverspec version #{Serverspec::VERSION}"
 end
 
-module SpecInfra::Backend
+module Specinfra::Backend
   class Exec
     # ORIGINAL
     # def run_command(cmd, opts={})
@@ -41,8 +41,9 @@ module SpecInfra::Backend
         stdout = get_stdout(chroot_stdout)
         exit_status = get_exit_status(chroot_stdout)
       else
-        stdout = run_with_no_ruby_environment { `#{cmd} 2>&1` }
-        exit_status = $?.exitstatus
+        stdout, _, exit_status = with_env do
+          spawn_command(cmd)
+        end
       end
 
       if @example
@@ -75,17 +76,19 @@ module SpecInfra::Backend
     end
 
     def exit_code_regexp
-      "#{exit_code_token}(\\d+)\s*\n"
+      "^#{exit_code_token}(\\d+)\\s*$"
     end
 
     def chroot_cmd(cmd)
       #quoting command so $ will not be interpreted by shell
       quoted_cmd = cmd.gsub('$', '\$')
-      %Q{
+      shell_out = %Q{
 sudo chroot #{chroot_dir} /bin/bash <<CHROOT_CMD
   #{quoted_cmd} 2>&1; echo #{exit_code_token}\\$?
 CHROOT_CMD
 }
+      puts shell_out
+      shell_out
     end
   end
 end

@@ -3,9 +3,9 @@ require 'bosh/stemcell/disk_image'
 RSpec.configure do |config|
   def change_root_dir(example)
     Bosh::Stemcell::DiskImage.new(image_file_path: ENV['STEMCELL_IMAGE']).while_mounted do |disk_image|
-      SpecInfra::Backend::Exec.instance.chroot_dir = disk_image.image_mount_point
+      Specinfra::Backend::Exec.instance.chroot_dir = disk_image.image_mount_point
       example.run
-      SpecInfra::Backend::Exec.instance.chroot_dir = nil
+      Specinfra::Backend::Exec.instance.chroot_dir = nil
     end
   end
 

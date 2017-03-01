@@ -11,7 +11,7 @@ describe 'Photonos 1 OS image', os_image: true do
 
     describe file('/etc/locale.conf') do
       it { should be_file }
-      it { should contain 'en_US.UTF-8' }
+      its(:content) { should match '^en_US\.UTF-8$' }
     end
   end
 

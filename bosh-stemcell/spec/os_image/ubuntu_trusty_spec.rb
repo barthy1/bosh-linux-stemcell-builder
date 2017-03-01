@@ -2,7 +2,7 @@ require 'bosh/stemcell/arch'
 require 'spec_helper'
 
 describe 'Ubuntu 14.04 OS image', os_image: true do
-  it_behaves_like 'every OS image'
+  it_behaves_like 'every OS image', focus: true
   it_behaves_like 'an upstart-based OS image'
   it_behaves_like 'a Linux kernel 3.x based OS image'
   it_behaves_like 'a Linux kernel module configured OS image'
@@ -67,8 +67,8 @@ describe 'Ubuntu 14.04 OS image', os_image: true do
 
     describe file('/etc/lsb-release') do
       it { should be_file }
-      it { should contain 'DISTRIB_RELEASE=14.04' }
-      it { should contain 'DISTRIB_CODENAME=trusty' }
+      its(:content) { should match '^DISTRIB_RELEASE=14\.04$' }
+      its(:content) { should match '^DISTRIB_CODENAME=trusty$' }
     end
 
     describe command('locale -a') do
@@ -90,21 +90,20 @@ describe 'Ubuntu 14.04 OS image', os_image: true do
   describe 'base_apt' do
     describe file('/etc/apt/sources.list') do
       if Bosh::Stemcell::Arch.ppc64le?
-        it { should contain 'deb http://ports.ubuntu.com/ubuntu-ports/ trusty main restricted' }
-        it { should contain 'deb http://ports.ubuntu.com/ubuntu-ports/ trusty-updates main restricted' }
-        it { should contain 'deb http://ports.ubuntu.com/ubuntu-ports/ trusty universe' }
-        it { should contain 'deb http://ports.ubuntu.com/ubuntu-ports/ trusty-updates universe' }
-        it { should contain 'deb http://ports.ubuntu.com/ubuntu-ports/ trusty multiverse' }
-        it { should contain 'deb http://ports.ubuntu.com/ubuntu-ports/ trusty-updates multiverse' }
-
-        it { should contain 'deb http://ports.ubuntu.com/ubuntu-ports/ trusty-security main restricted' }
-        it { should contain 'deb http://ports.ubuntu.com/ubuntu-ports/ trusty-security universe' }
-        it { should contain 'deb http://ports.ubuntu.com/ubuntu-ports/ trusty-security multiverse' }
+        its(:content) { should match '^deb http:\/\/ports\.ubuntu\.com\/ubuntu-ports\/ trusty main restricted$' }
+        its(:content) { should match '^deb http:\/\/ports\.ubuntu\.com\/ubuntu-ports\/ trusty-updates main restricted$' }
+        its(:content) { should match '^deb http:\/\/ports\.ubuntu\.com\/ubuntu-ports\/ trusty universe$' }
+        its(:content) { should match '^deb http:\/\/ports\.ubuntu\.com\/ubuntu-ports\/ trusty-updates universe$' }
+        its(:content) { should match '^deb http:\/\/ports\.ubuntu\.com\/ubuntu-ports\/ trusty multiverse$' }
+        its(:content) { should match '^deb http:\/\/ports\.ubuntu\.com\/ubuntu-ports\/ trusty-updates multiverse$' }
+        its(:content) { should match '^deb http:\/\/ports\.ubuntu\.com\/ubuntu-ports\/ trusty-security main restricted$' }
+        its(:content) { should match '^deb http:\/\/ports\.ubuntu\.com\/ubuntu-ports\/ trusty-security universe$' }
+        its(:content) { should match '^deb http:\/\/ports\.ubuntu\.com\/ubuntu-ports\/ trusty-security multiverse$' }
 
       else
-        it { should contain 'deb http://archive.ubuntu.com/ubuntu trusty main universe multiverse' }
-        it { should contain 'deb http://archive.ubuntu.com/ubuntu trusty-updates main universe multiverse' }
-        it { should contain 'deb http://security.ubuntu.com/ubuntu trusty-security main universe multiverse' }
+        its(:content) { should match '^deb http:\/\/archive\.ubuntu\.com\/ubuntu trusty main universe multiverse$' }
+        its(:content) { should match '^deb http:\/\/archive\.ubuntu\.com\/ubuntu trusty-updates main universe multiverse$' }
+        its(:content) { should match '^deb http:\/\/security\.ubuntu\.com\/ubuntu trusty-security main universe multiverse$' }
       end
     end
 
@@ -197,7 +196,7 @@ describe 'Ubuntu 14.04 OS image', os_image: true do
         aes192-ctr
         aes128-ctr
       ).join(',')
-      expect(sshd_config).to contain(/^Ciphers #{ciphers}$/)
+      expect(sshd_config.content).to match("^Ciphers #{ciphers}$")
     end
 
     it 'allows only secure HMACs and the weaker SHA1 HMAC required by golang ssh lib' do
@@ -211,7 +210,7 @@ describe 'Ubuntu 14.04 OS image', os_image: true do
         hmac-ripemd160
         hmac-sha1
       ).join(',')
-      expect(sshd_config).to contain(/^MACs #{macs}$/)
+      expect(sshd_config.content).to match("^MACs #{macs}$")
     end
   end
 
@@ -248,7 +247,7 @@ describe 'Ubuntu 14.04 OS image', os_image: true do
   context 'installed by bosh_user' do
     describe file('/etc/passwd') do
       it { should be_file }
-      it { should contain '/home/vcap:/bin/bash' }
+      its(:content) { should match '\/home\/vcap:\/bin\/bash$' }
     end
   end
 
@@ -285,7 +284,7 @@ EOF
   context 'overriding control alt delete (stig: V-38668)' do
     describe file('/etc/init/control-alt-delete.override') do
       it { should be_file }
-      it { should contain 'exec /usr/bin/logger -p security.info "Control-Alt-Delete pressed"' }
+      its(:content) { should match '^exec \/usr\/bin\/logger -p security\.info "Control-Alt-Delete pressed"$' }
     end
   end
 
@@ -442,7 +441,7 @@ EOF
 
   context 'restrict access to the su command CIS-9.5' do
     describe command('grep "^\s*auth\s*required\s*pam_wheel.so\s*use_uid" /etc/pam.d/su') do
-      it { should return_exit_status(0)}
+      its(:exit_status) { should eq 0 }
     end
     describe user('vcap') do
       it { should exist }

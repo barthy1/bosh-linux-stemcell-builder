@@ -10,7 +10,7 @@ describe 'CentOS 7 OS image', os_image: true do
   context 'installed by base_centos' do
     describe file('/etc/locale.conf') do
       it { should be_file }
-      it { should contain 'en_US.UTF-8' }
+      its(:content) { should match '^en_US\.UTF-8$' }
     end
 
     %w(
@@ -168,7 +168,7 @@ describe 'CentOS 7 OS image', os_image: true do
   context 'overriding control alt delete (stig: V-38668)' do
     describe file('/etc/systemd/system/ctrl-alt-del.target') do
       it { should be_file }
-      it { should contain '# escaping ctrl alt del' }
+      its(:content) { should match '^# escaping ctrl alt del$' }
     end
   end
 
@@ -340,7 +340,7 @@ describe 'CentOS 7 OS image', os_image: true do
 
   context 'restrict access to the su command CIS-9.5' do
     describe command('grep "^\s*auth\s*required\s*pam_wheel.so\s*use_uid" /etc/pam.d/su') do
-      it { should return_exit_status(0)}
+      its(:exit_status) { should eq 0 }
     end
     describe user('vcap') do
       it { should exist }

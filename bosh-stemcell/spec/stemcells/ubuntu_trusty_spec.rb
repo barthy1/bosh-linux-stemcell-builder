@@ -6,15 +6,15 @@ describe 'Ubuntu 14.04 stemcell image', stemcell_image: true do
   context 'installed by image_install_grub', {exclude_on_ppc64le: true} do
     describe file('/boot/grub/grub.conf') do
       it { should be_file }
-      it { should contain 'default=0' }
-      it { should contain 'timeout=1' }
+      its(:content) { should match '^default=0$' }
+      its(:content) { should match '^timeout=1$' }
       its(:content) { should match %r{^title Ubuntu 14\.04.* LTS \(.*\)$} }
-      it { should contain '  root (hd0,0)' }
+      its(:content) { should match '^  root \(hd0,0\)$' }
       its(:content) { should match %r{kernel /boot/vmlinuz-\S+-generic ro root=UUID=} }
-      it { should contain ' selinux=0' }
-      it { should contain ' cgroup_enable=memory swapaccount=1' }
-      it { should contain ' console=tty0 console=ttyS0,115200n8' }
-      it { should contain ' earlyprintk=ttyS0 rootdelay=300' }
+      its(:content) { should match '^ selinux=0$' }
+      its(:content) { should match '^ cgroup_enable=memory swapaccount=1$' }
+      its(:content) { should match '^ console=tty0 console=ttyS0,115200n8$' }
+      its(:content) { should match '^ earlyprintk=ttyS0 rootdelay=300$' }
       its(:content) { should match %r{initrd /boot/initrd.img-\S+-generic} }
 
       it('should set the grub menu password (stig: V-38585)') { should contain /^password --md5 \*/ }
@@ -87,8 +87,8 @@ describe 'Ubuntu 14.04 stemcell image', stemcell_image: true do
   } do
     describe file('/etc/network/interfaces') do
       it { should be_file }
-      it { should contain 'auto lo' }
-      it { should contain 'iface lo inet loopback' }
+      its(:content) { should match '^auto lo$' }
+      its(:content) { should match '^iface lo inet loopback$' }
     end
   end
 
@@ -103,8 +103,8 @@ describe 'Ubuntu 14.04 stemcell image', stemcell_image: true do
   } do
     describe file('/etc/network/interfaces') do
       it { should be_file }
-      it { should contain 'auto eth0' }
-      it { should contain 'iface eth0 inet dhcp' }
+      its(:content) { should match '^auto eth0$' }
+      its(:content) { should match '^iface eth0 inet dhcp$' }
     end
   end
 
@@ -353,8 +353,8 @@ describe 'Ubuntu 14.04 stemcell tarball', stemcell_tarball: true do
   context 'installed by bosh_dpkg_list stage' do
     describe file("#{ENV['STEMCELL_WORKDIR']}/stemcell/stemcell_dpkg_l.txt") do
       it { should be_file }
-      it { should contain 'Status=Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig-pend' }
-      it { should contain 'ubuntu-minimal' }
+      its(:content) { should match '^Status=Not\/Inst\/Conf-files\/Unpacked\/halF-conf\/Half-inst\/trig-aWait\/Trig-pend$' }
+      its(:content) { should match '^ubuntu-minimal$' }
     end
   end
 

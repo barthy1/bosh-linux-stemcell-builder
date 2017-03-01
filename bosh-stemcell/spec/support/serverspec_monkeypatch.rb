@@ -1,11 +1,12 @@
 require 'serverspec'
 
 # `example` method monkey path
-unless SpecInfra::VERSION == '1.15.0'
-  raise "Unexpected Specinfra version #{SpecInfra::VERSION}"
+unless Specinfra::VERSION == '2.67.1'
+  raise "Unexpected Specinfra version #{Specinfra::VERSION}"
 end
 
 # Exec monkey path
 require 'monkeypatch/serverspec/backend/exec'
-include Serverspec::Helper::Exec
-include Serverspec::Helper::DetectOS
+# include Serverspec::Helper::Exec
+# include Serverspec::Helper::DetectOS
+set :backend, :exec

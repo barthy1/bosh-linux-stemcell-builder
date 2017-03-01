@@ -60,11 +60,11 @@ shared_examples_for 'All Stemcells' do
 
   context 'libyaml should be installed' do
     describe command('test -L /usr/lib64/libyaml.so') do
-      it { should return_exit_status(0) }
+      its(:exit_status) { should eq 0 }
     end
 
     describe command('readlink -e /usr/lib64/libyaml.so') do
-      it { should return_exit_status(0) }
+      its(:exit_status) { should eq 0 }
     end
   end
 
@@ -95,13 +95,13 @@ shared_examples_for 'All Stemcells' do
   describe 'logrotate' do
     describe 'should rotate every 15 minutes' do
       describe file('/etc/cron.d/logrotate') do
-        it { should contain '0,15,30,45 * * * * root /usr/bin/logrotate-cron' }
+        its(:content) { should match '^0,15,30,45 \* \* \* \* root \/usr\/bin\/logrotate-cron$' }
       end
     end
 
     describe 'default su directive' do
       describe file('/etc/logrotate.d/default_su_directive') do
-        it { should contain 'su root root' }
+        its(:content) { should match '^su root root$' }
       end
     end
   end

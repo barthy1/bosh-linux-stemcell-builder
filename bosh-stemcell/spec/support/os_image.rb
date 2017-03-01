@@ -5,7 +5,7 @@ RSpec.configure do |config|
     config.before(:all) do
       @os_image_dir = Dir.mktmpdir('os-image-rspec')
       Bosh::Core::Shell.new.run("sudo tar xf #{ENV['OS_IMAGE']} -C #{@os_image_dir}")
-      SpecInfra::Backend::Exec.instance.chroot_dir = @os_image_dir
+      Specinfra::Backend::Exec.instance.chroot_dir = @os_image_dir
     end
 
     config.after(:all) do

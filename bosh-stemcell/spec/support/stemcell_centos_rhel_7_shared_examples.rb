@@ -7,15 +7,15 @@ shared_examples_for 'a CentOS 7 or RHEL 7 stemcell' do
   context 'installed by image_install_grub' do
     describe file('/etc/fstab') do
       it { should be_file }
-      it { should contain 'UUID=' }
-      it { should contain '/ ext4 defaults 1 1' }
+      its(:content) { should match '^UUID=$' }
+      its(:content) { should match '^\/ ext4 defaults 1 1$' }
     end
 
     # GRUB 2 configuration
     describe file('/boot/grub2/grub.cfg') do
-      it { should contain 'net.ifnames=0' }
-      it { should contain 'selinux=0' }
-      it { should contain 'plymouth.enable=0' }
+      its(:content) { should match '^net.ifnames=0$' }
+      its(:content) { should match '^selinux=0$' }
+      its(:content) { should match '^plymouth.enable=0$' }
       it { should_not contain 'xen_blkfront.sda_is_xvda=1'}
       it('single-user mode boot should be disabled (stig: V-38586)') { should_not contain 'single' }
 
@@ -29,9 +29,9 @@ shared_examples_for 'a CentOS 7 or RHEL 7 stemcell' do
 
     # GRUB 0.97 configuration (used only on Amazon PV hosts) must have same kernel params as GRUB 2
     describe file('/boot/grub/grub.conf') do
-      it { should contain 'net.ifnames=0' }
-      it { should contain 'selinux=0' }
-      it { should contain 'plymouth.enable=0' }
+      its(:content) { should match '^net.ifnames=0$' }
+      its(:content) { should match '^selinux=0$' }
+      its(:content) { should match '^plymouth.enable=0$' }
       it { should_not contain 'xen_blkfront.sda_is_xvda=1'}
 
       it('should be of mode 600 (stig: V-38583)') { should be_mode('600') }
@@ -68,16 +68,16 @@ shared_examples_for 'a CentOS 7 or RHEL 7 stemcell' do
   } do
     describe file('/etc/sysconfig/network') do
       it { should be_file }
-      it { should contain 'NETWORKING=yes' }
-      it { should contain 'NETWORKING_IPV6=no' }
-      it { should contain 'HOSTNAME=bosh-stemcell' }
-      it { should contain 'NOZEROCONF=yes' }
+      its(:content) { should match '^NETWORKING=yes$' }
+      its(:content) { should match '^NETWORKING_IPV6=no$' }
+      its(:content) { should match '^HOSTNAME=bosh-stemcell$' }
+      its(:content) { should match '^NOZEROCONF=yes$' }
     end
 
     describe file('/etc/NetworkManager/NetworkManager.conf') do
       it { should be_file }
-      it { should contain 'plugins=ifcfg-rh' }
-      it { should contain 'no-auto-default=*' }
+      its(:content) { should match '^plugins=ifcfg-rh$' }
+      its(:content) { should match '^no-auto-default=\*$' }
     end
   end
 
@@ -91,18 +91,18 @@ shared_examples_for 'a CentOS 7 or RHEL 7 stemcell' do
   } do
     describe file('/etc/sysconfig/network') do
       it { should be_file }
-      it { should contain 'NETWORKING=yes' }
-      it { should contain 'NETWORKING_IPV6=no' }
-      it { should contain 'HOSTNAME=bosh-stemcell' }
-      it { should contain 'NOZEROCONF=yes' }
+      its(:content) { should match '^NETWORKING=yes$' }
+      its(:content) { should match '^NETWORKING_IPV6=no$' }
+      its(:content) { should match '^HOSTNAME=bosh-stemcell$' }
+      its(:content) { should match '^NOZEROCONF=yes$' }
     end
 
     describe file('/etc/sysconfig/network-scripts/ifcfg-eth0') do
       it { should be_file }
-      it { should contain 'DEVICE=eth0' }
-      it { should contain 'BOOTPROTO=dhcp' }
-      it { should contain 'ONBOOT=on' }
-      it { should contain 'TYPE="Ethernet"' }
+      its(:content) { should match '^DEVICE=eth0$' }
+      its(:content) { should match '^BOOTPROTO=dhcp$' }
+      its(:content) { should match '^ONBOOT=on$' }
+      its(:content) { should match '^TYPE="Ethernet"$' }
     end
   end
 
