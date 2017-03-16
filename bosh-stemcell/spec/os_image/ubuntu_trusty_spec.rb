@@ -303,7 +303,7 @@ EOF
   end
 
   context 'PAM configuration' do
-    describe file('/lib/x86_64-linux-gnu/security/pam_cracklib.so') do
+    describe file("/lib/#{Bosh::Stemcell::Arch.arch}-linux-gnu/security/pam_cracklib.so") do
       it { should be_file }
     end
 
